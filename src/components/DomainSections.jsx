@@ -51,7 +51,13 @@ const InkBlob = ({ color, size, style }) => (
 );
 
 // Manga panel section wrapper — NO video/clip bg here (performance)
-const MangaSection = ({ id, children, blobColors = ['rgba(124,58,237,0.18)', 'rgba(37,99,235,0.12)'], style = {} }) => (
+const MangaSection = ({
+  id,
+  children,
+  blobColors = ['rgba(124,58,237,0.18)', 'rgba(37,99,235,0.12)'],
+  backgroundImage,
+  style = {},
+}) => (
   <section
     id={id}
     style={{
@@ -59,9 +65,28 @@ const MangaSection = ({ id, children, blobColors = ['rgba(124,58,237,0.18)', 'rg
       overflow: 'hidden',
       padding: 'var(--section-pad) 5%',
       background: 'var(--abyss)',
+      backgroundImage: backgroundImage
+        ? `linear-gradient(180deg, rgba(4,4,8,0.84) 0%, rgba(4,4,8,0.9) 100%), url(${backgroundImage})`
+        : undefined,
+      backgroundSize: backgroundImage ? 'cover' : undefined,
+      backgroundPosition: backgroundImage ? 'center' : undefined,
+      backgroundRepeat: backgroundImage ? 'no-repeat' : undefined,
       ...style,
     }}
   >
+    {/* Additional dim layer to keep section text contrast high */}
+    {backgroundImage && (
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 0,
+          background: 'radial-gradient(ellipse at center, rgba(124,58,237,0.12), rgba(4,4,8,0.72) 70%)',
+          pointerEvents: 'none',
+        }}
+      />
+    )}
+
     {/* Ink blobs — CSS only, zero GPU overhead */}
     <InkBlob color={blobColors[0]} size="500px" style={{ top: '-120px', left: '-100px' }} />
     <InkBlob color={blobColors[1]} size="400px" style={{ bottom: '-80px', right: '5%' }} />
@@ -188,6 +213,7 @@ export const Domain1About = () => (
   <MangaSection
     id="domain1"
     blobColors={['rgba(124,58,237,0.18)', 'rgba(74,14,143,0.12)']}
+    backgroundImage="/assets/clips/action_1.webp"
     style={{ background: 'linear-gradient(180deg, #060810 0%, #0d0820 100%)' }}
   >
     <ChapterHead
@@ -492,6 +518,7 @@ export const Domain2Skills = () => (
   <MangaSection
     id="domain2"
     blobColors={['rgba(37,99,235,0.16)', 'rgba(124,58,237,0.12)']}
+    backgroundImage="/assets/clips/domain_open.webp"
     style={{ background: 'linear-gradient(180deg, #0d0820 0%, #080416 100%)' }}
   >
     <ChapterHead
@@ -794,6 +821,7 @@ export const Domain3Projects = () => (
   <MangaSection
     id="domain3"
     blobColors={['rgba(244,114,182,0.14)', 'rgba(124,58,237,0.12)']}
+    backgroundImage="/assets/clips/domain_peak.webp"
     style={{ background: 'linear-gradient(180deg, #080416 0%, #0d0820 100%)' }}
   >
     <ChapterHead
@@ -822,6 +850,7 @@ export const Domain4Contact = () => (
   <MangaSection
     id="domain4"
     blobColors={['rgba(251,191,36,0.12)', 'rgba(124,58,237,0.12)']}
+    backgroundImage="/assets/clips/domain_close.webp"
     style={{ background: 'linear-gradient(180deg, #0d0820 0%, #040408 100%)' }}
   >
     <ChapterHead

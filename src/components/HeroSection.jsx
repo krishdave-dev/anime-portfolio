@@ -7,71 +7,28 @@ import AnimatedClipBg from './AnimatedClipBg';
 gsap.registerPlugin(ScrollTrigger);
 
 const HeroSection = () => {
-  const videoRef    = useRef(null);
   const containerRef = useRef(null);
   const scrollTrackRef = useRef(null);
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video || !containerRef.current || !scrollTrackRef.current) return undefined;
+    if (!containerRef.current || !scrollTrackRef.current) return undefined;
 
-    let initialized = false;
-    let cleanupTimeline = null;
-
-    video.preload  = 'auto';
-    video.muted    = true;
-    video.playsInline = true;
-
-    const onLoaded = () => {
-      if (initialized) return;
-      initialized = true;
-
-      const dur = video.duration;
-      if (!isFinite(dur) || dur <= 0) return;
-
-      const ctx = gsap.context(() => {
-        ScrollTrigger.create({
-          trigger: scrollTrackRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1.5,
-          pin: containerRef.current,
-          pinSpacing: false,
-          anticipatePin: 1,
-          onUpdate: (self) => {
-            const t = self.progress * dur;
-            if (!isFinite(t)) return;
-            const targetTime = Math.min(t, dur - 0.01);
-            if (Math.abs(video.currentTime - targetTime) > 0.033) {
-              video.currentTime = targetTime;
-            }
+    const ctx = gsap.context(() => {
+      gsap.utils.toArray('.hero-float').forEach((el, i) => {
+        gsap.to(el, {
+          y: -(i + 1) * 100,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: scrollTrackRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true,
           },
         });
+      });
+    }, containerRef);
 
-        gsap.utils.toArray('.hero-float').forEach((el, i) => {
-          gsap.to(el, {
-            y: -(i + 1) * 100,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: scrollTrackRef.current,
-              start: 'top top',
-              end: 'bottom top',
-              scrub: true,
-            },
-          });
-        });
-      }, containerRef);
-
-      cleanupTimeline = () => ctx.revert();
-    };
-
-    if (video.readyState >= 1) onLoaded();
-    else video.addEventListener('loadedmetadata', onLoaded, { once: true });
-
-    return () => {
-      video.removeEventListener('loadedmetadata', onLoaded);
-      if (cleanupTimeline) cleanupTimeline();
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -90,19 +47,18 @@ const HeroSection = () => {
           zIndex: 1,
         }}
       >
-        {/* Scroll-scrubbed master video */}
-        <video
-          ref={videoRef}
-          src="/assets/jjk_video.mp4"
-          muted
-          playsInline
+        {/* Static hero image background (video removed for smoothness) */}
+        <div
           style={{
             position: 'absolute',
             inset: 0,
             width: '100%',
             height: '100%',
-            objectFit: 'cover',
-            filter: 'brightness(0.28) saturate(1.6) hue-rotate(10deg)',
+            backgroundImage: 'url(/assets/ryuvsyuta.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            filter: 'brightness(0.28) saturate(1.35) hue-rotate(8deg)',
             zIndex: 0,
           }}
         />
