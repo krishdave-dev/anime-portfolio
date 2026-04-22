@@ -1,0 +1,248 @@
+/* ============================================
+   KRISH DAVE — JJK DOMAIN EXPANSION PORTFOLIO
+   Global Styles v2 — Full Manga Aesthetic
+   ============================================ */
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --void-black: #040408;
+  --abyss: #060810;
+  --deep-purple: #0d0820;
+  --ink-dark: #0a0a14;
+  --cursed-purple: #4a0e8f;
+  --domain-violet: #7c3aed;
+  --energy-blue: #2563eb;
+  --electric: #60a5fa;
+  --sakura: #f472b6;
+  --gold: #fbbf24;
+  --white: #f8fafc;
+  --off-white: #e2e8f0;
+  --gray-muted: #94a3b8;
+  --manga-ink: #1a1a2e;
+
+  --glow-purple: rgba(124, 58, 237, 0.6);
+  --glow-blue: rgba(96, 165, 250, 0.5);
+  --glow-sakura: rgba(244, 114, 182, 0.5);
+
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'Outfit', sans-serif;
+  --font-japanese: 'Noto Sans JP', sans-serif;
+
+  --section-pad: clamp(5rem, 9vw, 9rem);
+  --panel-border: 3px solid rgba(255,255,255,0.12);
+}
+
+html { scroll-behavior: smooth; overflow-x: hidden; }
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--void-black);
+  color: var(--white);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--void-black); }
+::-webkit-scrollbar-thumb { background: var(--domain-violet); border-radius: 2px; }
+
+/* ── Manga Panel System ───────────────────────────────────── */
+.manga-panel {
+  border: var(--panel-border);
+  position: relative;
+  overflow: hidden;
+}
+.manga-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 16px 16px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Thick ink border — manga style */
+.manga-ink-box {
+  border: 3px solid rgba(255,255,255,0.15);
+  box-shadow:
+    inset 0 0 0 1px rgba(124,58,237,0.2),
+    0 0 0 1px rgba(0,0,0,0.8);
+}
+
+/* Diagonal slash corners */
+.panel-slash-tr {
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%);
+}
+.panel-slash-tl {
+  clip-path: polygon(20px 0, 100% 0, 100% 100%, 0 100%, 0 20px);
+}
+.panel-slash-both {
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+}
+.panel-slash-both-lg {
+  clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 28px 100%, 0 calc(100% - 28px));
+}
+
+/* Speed lines background */
+.speed-lines-bg {
+  background: repeating-conic-gradient(
+    from 0deg at 50% 110%,
+    transparent 0deg, transparent 3.4deg,
+    rgba(124,58,237,0.03) 3.4deg, rgba(124,58,237,0.03) 3.6deg
+  );
+}
+
+/* Halftone dots */
+.halftone-bg {
+  background-image: radial-gradient(circle, rgba(124,58,237,0.06) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+/* Grid lines */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(124,58,237,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,58,237,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Manga speech bubble effect */
+.onomatopoeia {
+  font-family: var(--font-display);
+  font-size: clamp(60px, 12vw, 140px);
+  color: transparent;
+  -webkit-text-stroke: 2px rgba(124,58,237,0.15);
+  position: absolute;
+  user-select: none;
+  pointer-events: none;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+
+/* Glass card */
+.glass-card {
+  background: rgba(6, 8, 16, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* ── Typography ───────────────────────────────────────────── */
+.label-tag {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+}
+
+.card-title {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.body-text {
+  font-family: var(--font-body);
+  line-height: 1.75;
+  font-weight: 400;
+}
+
+.small-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+}
+
+/* ── Gradients ────────────────────────────────────────────── */
+.grad-purple { background: linear-gradient(135deg, #7c3aed, #4a0e8f); }
+.grad-blue   { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+.grad-sakura { background: linear-gradient(135deg, #f472b6, #ec4899); }
+.grad-gold   { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+
+.text-grad-main {
+  background: linear-gradient(135deg, #7c3aed, #60a5fa, #f472b6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.text-grad-gold {
+  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Glows ────────────────────────────────────────────────── */
+.glow-violet { box-shadow: 0 0 24px rgba(124,58,237,0.45), 0 0 60px rgba(124,58,237,0.15); }
+.glow-blue   { box-shadow: 0 0 24px rgba(96,165,250,0.45); }
+.glow-sakura { box-shadow: 0 0 24px rgba(244,114,182,0.45); }
+.glow-gold   { box-shadow: 0 0 24px rgba(251,191,36,0.45); }
+
+/* ── Animations ───────────────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-14px); }
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes spin-reverse {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+@keyframes scanLine {
+  0%   { top: -2%; }
+  100% { top: 102%; }
+}
+@keyframes pulseRing {
+  0%   { transform: translate(-50%, -50%) scale(0.8); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+}
+@keyframes clipFlicker {
+  0%, 95%, 100% { opacity: 1; }
+  96% { opacity: 0.85; }
+  98% { opacity: 1; }
+}
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(124,58,237,0.3); }
+  50%       { border-color: rgba(124,58,237,0.7); }
+}
+@keyframes inkDrip {
+  0%   { transform: scaleY(0); transform-origin: top; }
+  100% { transform: scaleY(1); transform-origin: top; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+@keyframes zoomGif {
+  0%, 100% { transform: scale(1.02); }
+  50%       { transform: scale(1.06); }
+}
+@keyframes panelEnter {
+  from { opacity: 0; transform: translateY(30px) skewY(-1deg); }
+  to   { opacity: 1; transform: translateY(0)    skewY(0deg); }
+}
+@keyframes textReveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0% 0 0); }
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  :root { --section-pad: clamp(3rem, 7vw, 5rem); }
+  body  { cursor: auto; }
+}
