@@ -4,8 +4,8 @@ import { Volume2, VolumeX, Play, Pause } from 'lucide-react';
 const AudioPlayer = () => {
   const baseBars = useMemo(() => Array(10).fill(0.2), []);
   const audioRef    = useRef(null);
-  const [playing,   setPlaying]   = useState(false);
-  const [volume,    setVolume]    = useState(0.2);
+  const [playing,   setPlaying]   = useState(true);
+  const [volume,    setVolume]    = useState(0.05);
   const [bars,      setBars]      = useState(baseBars);
   const animRef     = useRef(null);
 
@@ -15,6 +15,17 @@ const AudioPlayer = () => {
 
     audio.volume = 0.2;
     audio.loop   = true;
+
+    const playAudio = async () => {
+      try {
+        await audio.play();
+        setPlaying(true);
+      } catch (err) {
+        console.log('Autoplay blocked by browser policy:', err);
+      }
+    };
+
+    playAudio();
 
     return () => {
       clearTimeout(animRef.current);
@@ -141,7 +152,7 @@ const AudioPlayer = () => {
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
         {volume === 0 ? <VolumeX size={11} color="rgba(148,163,184,0.5)" /> : <Volume2 size={11} color="rgba(148,163,184,0.5)" />}
         <input
-          type="range" min="0" max="1" step="0.02"
+          type="range" min="0" max="1" step="0.01"
           value={volume} onChange={onVol}
           style={{ width: '50px', accentColor: '#7c3aed', cursor: 'none' }}
         />
