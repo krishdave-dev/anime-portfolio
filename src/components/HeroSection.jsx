@@ -13,45 +13,64 @@ const HeroSection = () => {
 
   useEffect(() => {
     const video = videoRef.current;
+    if (!video || !containerRef.current || !scrollTrackRef.current) return undefined;
+
+    let initialized = false;
+    let cleanupTimeline = null;
+
     video.preload  = 'auto';
     video.muted    = true;
     video.playsInline = true;
 
     const onLoaded = () => {
-      const dur = video.duration;
-      ScrollTrigger.create({
-        trigger: scrollTrackRef.current,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 1.5,
-        pin: containerRef.current,
-        pinSpacing: false,
-        anticipatePin: 1,
-        onUpdate: (self) => {
-          const t = self.progress * dur;
-          if (isFinite(t)) video.currentTime = Math.min(t, dur - 0.01);
-        },
-      });
+      if (initialized) return;
+      initialized = true;
 
-      // Parallax on floating layers
-      gsap.utils.toArray('.hero-float').forEach((el, i) => {
-        gsap.to(el, {
-          y: -(i + 1) * 100,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: scrollTrackRef.current,
-            start: 'top top',
-            end: 'bottom top',
-            scrub: true,
+      const dur = video.duration;
+      if (!isFinite(dur) || dur <= 0) return;
+
+      const ctx = gsap.context(() => {
+        ScrollTrigger.create({
+          trigger: scrollTrackRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1.5,
+          pin: containerRef.current,
+          pinSpacing: false,
+          anticipatePin: 1,
+          onUpdate: (self) => {
+            const t = self.progress * dur;
+            if (!isFinite(t)) return;
+            const targetTime = Math.min(t, dur - 0.01);
+            if (Math.abs(video.currentTime - targetTime) > 0.033) {
+              video.currentTime = targetTime;
+            }
           },
         });
-      });
+
+        gsap.utils.toArray('.hero-float').forEach((el, i) => {
+          gsap.to(el, {
+            y: -(i + 1) * 100,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: scrollTrackRef.current,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: true,
+            },
+          });
+        });
+      }, containerRef);
+
+      cleanupTimeline = () => ctx.revert();
     };
 
-    video.addEventListener('loadedmetadata', onLoaded);
+    if (video.readyState >= 1) onLoaded();
+    else video.addEventListener('loadedmetadata', onLoaded, { once: true });
+
     return () => {
       video.removeEventListener('loadedmetadata', onLoaded);
-      ScrollTrigger.getAll().forEach(t => t.kill());
+      if (cleanupTimeline) cleanupTimeline();
     };
   }, []);
 

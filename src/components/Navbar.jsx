@@ -15,9 +15,25 @@ const Navbar = () => {
   const [activeNav,   setActiveNav]   = useState(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
+    let rafId = null;
+
+    const updateScrolled = () => {
+      rafId = null;
+      const next = window.scrollY > 60;
+      setScrolled((prev) => (prev === next ? prev : next));
+    };
+
+    const onScroll = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(updateScrolled);
+    };
+
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   const goTo = (href) => {

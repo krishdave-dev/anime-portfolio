@@ -13,14 +13,18 @@ const MangaTransition = ({ chapter, label, color = '#7c3aed' }) => {
   const lineRef = useRef(null);
 
   useEffect(() => {
-    gsap.fromTo(lineRef.current,
-      { scaleX: 0, opacity: 0 },
-      {
-        scaleX: 1, opacity: 1,
-        duration: 1.4, ease: 'power3.inOut',
-        scrollTrigger: { trigger: lineRef.current, start: 'top 88%', once: true },
-      }
-    );
+    const ctx = gsap.context(() => {
+      gsap.fromTo(lineRef.current,
+        { scaleX: 0, opacity: 0 },
+        {
+          scaleX: 1, opacity: 1,
+          duration: 1.4, ease: 'power3.inOut',
+          scrollTrigger: { trigger: lineRef.current, start: 'top 88%', once: true },
+        }
+      );
+    });
+
+    return () => ctx.revert();
   }, []);
 
   return (

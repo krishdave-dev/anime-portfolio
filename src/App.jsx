@@ -1,5 +1,5 @@
-import React, { Suspense, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { Suspense, useState, useCallback, useRef } from 'react';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -17,7 +17,7 @@ const FluidSurface3D = React.lazy(() => import('./components/FluidSurface3D'));
 gsap.registerPlugin(ScrollTrigger);
 
 /* ─── Loading Screen ─────────────────────────────────────────────── */
-const LoadingScreen = ({ show, onComplete }) => {
+const LoadingScreen = React.memo(({ show, onComplete }) => {
   const [progress, setProgress] = useState(0);
   const [burst,    setBurst]    = useState(false);
 
@@ -39,7 +39,7 @@ const LoadingScreen = ({ show, onComplete }) => {
   return (
     <AnimatePresence>
       {show && (
-        <motion.div
+        <Motion.div
           key="loader"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, scale: 1.04 }}
@@ -94,7 +94,7 @@ const LoadingScreen = ({ show, onComplete }) => {
 
           {/* Text block */}
           <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', padding: '0 2rem' }}>
-            <motion.div
+            <Motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
@@ -109,9 +109,9 @@ const LoadingScreen = ({ show, onComplete }) => {
               }}
             >
               術式展開
-            </motion.div>
+            </Motion.div>
 
-            <motion.div
+            <Motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 0.3 }}
@@ -128,9 +128,9 @@ const LoadingScreen = ({ show, onComplete }) => {
               }}
             >
               TECHNIQUE OPEN
-            </motion.div>
+            </Motion.div>
 
-            <motion.div
+            <Motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.6 }}
@@ -143,7 +143,7 @@ const LoadingScreen = ({ show, onComplete }) => {
               }}
             >
               LOADING KRISH DAVE · PORTFOLIO
-            </motion.div>
+            </Motion.div>
 
             {/* Progress */}
             <div style={{ width: '280px', margin: '0 auto' }}>
@@ -178,21 +178,29 @@ const LoadingScreen = ({ show, onComplete }) => {
               </div>
             </div>
           </div>
-        </motion.div>
+        </Motion.div>
       )}
     </AnimatePresence>
   );
-};
+});
 
 /* ─── App ────────────────────────────────────────────────────────── */
 const App = () => {
   const [loaded,      setLoaded]      = useState(false);
   const [showContent, setShowContent] = useState(false);
+  const revealTimeoutRef = useRef(null);
 
-  const handleDone = () => {
+  const handleDone = useCallback(() => {
     setLoaded(true);
-    setTimeout(() => setShowContent(true), 600);
-  };
+    clearTimeout(revealTimeoutRef.current);
+    revealTimeoutRef.current = setTimeout(() => setShowContent(true), 600);
+  }, []);
+
+  React.useEffect(() => {
+    return () => {
+      clearTimeout(revealTimeoutRef.current);
+    };
+  }, []);
 
   return (
     <>
@@ -201,7 +209,7 @@ const App = () => {
 
       <AnimatePresence>
         {showContent && (
-          <motion.div
+          <Motion.div
             key="content"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -244,7 +252,7 @@ const App = () => {
             </div>
 
             <AudioPlayer />
-          </motion.div>
+          </Motion.div>
         )}
       </AnimatePresence>
     </>

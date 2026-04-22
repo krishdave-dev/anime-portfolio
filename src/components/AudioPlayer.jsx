@@ -1,48 +1,60 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { Volume2, VolumeX, Play, Pause } from 'lucide-react';
 
 const AudioPlayer = () => {
+  const baseBars = useMemo(() => Array(10).fill(0.2), []);
   const audioRef    = useRef(null);
   const [playing,   setPlaying]   = useState(false);
   const [volume,    setVolume]    = useState(0.2);
-  const [bars,      setBars]      = useState(Array(10).fill(0.3));
+  const [bars,      setBars]      = useState(baseBars);
   const animRef     = useRef(null);
 
   useEffect(() => {
     const audio = audioRef.current;
+    if (!audio) return undefined;
+
     audio.volume = 0.2;
     audio.loop   = true;
-    return () => clearTimeout(animRef.current);
+
+    return () => {
+      clearTimeout(animRef.current);
+      audio.pause();
+    };
   }, []);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio) audio.volume = volume;
+  }, [volume]);
 
   useEffect(() => {
     if (playing) {
       const tick = () => {
         setBars(prev => prev.map(() => 0.15 + Math.random() * 0.85));
-        animRef.current = setTimeout(tick, 100);
+        animRef.current = setTimeout(tick, 140);
       };
-      animRef.current = setTimeout(tick, 100);
+      animRef.current = setTimeout(tick, 140);
     } else {
       clearTimeout(animRef.current);
-      setBars(Array(10).fill(0.2));
+      setBars(baseBars);
     }
     return () => clearTimeout(animRef.current);
-  }, [playing]);
+  }, [playing, baseBars]);
 
-  const toggle = async () => {
+  const toggle = useCallback(async () => {
     const audio = audioRef.current;
+    if (!audio) return;
     if (playing) { audio.pause(); setPlaying(false); }
     else {
       try { await audio.play(); setPlaying(true); }
       catch (e) { console.log('Audio blocked:', e); }
     }
-  };
+  }, [playing]);
 
-  const onVol = e => {
+  const onVol = useCallback((e) => {
     const v = parseFloat(e.target.value);
     setVolume(v);
-    audioRef.current.volume = v;
-  };
+  }, []);
 
   return (
     <div style={{

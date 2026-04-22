@@ -9,7 +9,10 @@ const CustomCursor = () => {
   useEffect(() => {
     const cursor = cursorRef.current;
     const follower = followerRef.current;
+    if (!cursor || !follower) return undefined;
+
     let rafId;
+    const interactiveSelector = 'a,button,[data-cursor]';
 
     const onMove = (e) => {
       pos.current = { x: e.clientX, y: e.clientY };
@@ -32,15 +35,23 @@ const CustomCursor = () => {
       follower.classList.remove('follower--hover');
     };
 
-    document.addEventListener('mousemove', onMove);
-    document.querySelectorAll('a,button,[data-cursor]').forEach(el => {
-      el.addEventListener('mouseenter', onEnterLink);
-      el.addEventListener('mouseleave', onLeaveLink);
-    });
+    const onHoverStart = (e) => {
+      if (e.target.closest(interactiveSelector)) onEnterLink();
+    };
+
+    const onHoverEnd = (e) => {
+      if (e.target.closest(interactiveSelector)) onLeaveLink();
+    };
+
+    document.addEventListener('pointermove', onMove, { passive: true });
+    document.addEventListener('mouseover', onHoverStart);
+    document.addEventListener('mouseout', onHoverEnd);
 
     rafId = requestAnimationFrame(animate);
     return () => {
-      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('pointermove', onMove);
+      document.removeEventListener('mouseover', onHoverStart);
+      document.removeEventListener('mouseout', onHoverEnd);
       cancelAnimationFrame(rafId);
     };
   }, []);

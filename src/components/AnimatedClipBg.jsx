@@ -16,17 +16,24 @@ const AnimatedClipBg = ({
   const [prev, setPrev] = useState(null);
   const [fading, setFading] = useState(false);
   const timerRef = useRef(null);
+  const fadeTimeoutRef = useRef(null);
 
   useEffect(() => {
     if (CLIP_PATHS.length < 2) return;
     timerRef.current = setInterval(() => {
-      setPrev(current);
+      setCurrent((c) => {
+        setPrev(c);
+        return (c + 1) % CLIP_PATHS.length;
+      });
       setFading(true);
-      setCurrent(c => (c + 1) % CLIP_PATHS.length);
-      setTimeout(() => setFading(false), 700);
+      clearTimeout(fadeTimeoutRef.current);
+      fadeTimeoutRef.current = setTimeout(() => setFading(false), 700);
     }, cycleMs);
-    return () => clearInterval(timerRef.current);
-  }, [current, cycleMs]);
+    return () => {
+      clearInterval(timerRef.current);
+      clearTimeout(fadeTimeoutRef.current);
+    };
+  }, [cycleMs]);
 
   const imgStyle = {
     position: 'absolute',
